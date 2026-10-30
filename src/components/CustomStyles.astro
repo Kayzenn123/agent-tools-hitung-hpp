@@ -1,0 +1,37 @@
+---
+// HitungHPP 2026-10-30 — seed 2026-12-01: "tiang ukur pasang surut" di dermaga beton.
+// Palet mid/analogous hue 153 (oklch → srgb, kontras AA terverifikasi):
+// bg #5cac77 · surface #459360 · text #041107 (7.0:1) · muted #223929 (4.5:1)
+// accent teal #00ae97 · accent2 limau #94c200 · pop stempel #ff73b5
+// Font: --font-display (Beiruti) / --font-body (Noto Sans Thai Looped) / --font-accent (Risque)
+// Tema tunggal (light-mid). Tidak ada dark mode — konsep tidak butuh.
+---
+
+<style is:inline>
+  :root {
+    --aw-font-sans: var(--font-body);
+    --aw-font-serif: var(--font-accent);
+    --aw-font-heading: var(--font-display);
+
+    --aw-color-primary: rgb(0 174 151);
+    --aw-color-secondary: rgb(3 128 116);
+    --aw-color-accent: rgb(255 115 181);
+
+    --aw-color-text-heading: rgb(4 17 7);
+    --aw-color-text-default: rgb(4 17 7);
+    --aw-color-text-muted: rgb(34 57 41);
+    --aw-color-bg-page: rgb(92 172 119);
+
+    --aw-color-bg-page-dark: rgb(4 17 7);
+
+    --hpp-surface: rgb(69 147 96);
+    --hpp-lime: rgb(148 194 0);
+    --hpp-pop: rgb(255 115 181);
+    --hpp-ink: rgb(4 17 7);
+
+    ::selection {
+      background-color: rgb(148 194 0);
+      color: rgb(4 17 7);
+    }
+  }
+</style>

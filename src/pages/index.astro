@@ -1,0 +1,300 @@
+---
+import Layout from '~/layouts/Layout.astro';
+import { Icon } from 'astro-icon/components';
+import '~/assets/styles/hpp.css';
+
+const metadata = {
+  title: 'HitungHPP — kalkulator HPP buat yang jualan',
+  ignoreTitleTemplate: true,
+  description:
+    'Kalkulator Harga Pokok Produksi (HPP) untuk UMKM & jualan online Indonesia. Isi bahan baku + biaya operasional, ketahuan HPP per unit & harga jual yang bener.',
+};
+---
+
+<Layout metadata={metadata}>
+  <a href="#kalkulator" class="skip-link">lompat ke kalkulator</a>
+
+  <!-- ====== topbar ramping: tanpa navbar marketing ====== -->
+  <header class="border-b-[3px] border-[rgb(4_17_7)]">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
+      <span class="sticker" aria-hidden="true"><Icon name="tiang-ukur" class="w-8 h-8" /></span>
+      <p class="font-display font-bold">hitunghpp</p>
+      <nav aria-label="navigasi" class="ml-auto hidden sm:flex items-center gap-4">
+        <a href="#kalkulator" class="font-bold underline underline-offset-4">hitung</a>
+        <a href="#hasil" class="font-bold underline underline-offset-4">hasil</a>
+        <a href="#resep" class="font-bold underline underline-offset-4">resep</a>
+        <a href="#tanya" class="font-bold underline underline-offset-4">tanya</a>
+      </nav>
+      <button id="btn-gerak" type="button" class="btn-beton ghost !px-3 !py-2 ml-auto sm:ml-0" aria-pressed="true">
+        <Icon name="tabler:wave-sine" class="w-5 h-5" aria-hidden="true" /><span>gerak: nyala</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ====== hero: tiang ukur kosong ====== -->
+  <section id="hero-stage" aria-labelledby="judul-utama" class="relative overflow-hidden">
+    <div class="max-w-6xl mx-auto px-4 pt-10 pb-6 md:pt-16 md:pb-10 text-center">
+      <button
+        id="tiang"
+        type="button"
+        class="sticker mx-auto mb-4 cursor-pointer"
+        aria-label="tiang ukur pasang. ketuk lima kali untuk kejutan."
+        title="ketuk 5x"
+      >
+        <Icon name="tiang-ukur" class="w-20 h-20 md:w-28 md:h-28" />
+      </button>
+      <p class="label-dermaga mb-3">tiang ukur · dermaga umkm</p>
+      <h1 id="judul-utama" class="giant">hitung hpp</h1>
+      <p class="font-accent-hand mt-4 max-w-xl mx-auto">
+        isi biayanya, biar airnya naik. ketahuan harga pokok produksimu per unit — bukan tebak-tebakan.
+      </p>
+      <div class="mt-6 flex flex-wrap justify-center gap-3">
+        <a href="#kalkulator" class="btn-beton">
+          <Icon name="tabler:calculator" class="w-5 h-5" aria-hidden="true" />mulai ngitung
+        </a>
+        <a href="#resep" class="btn-beton secondary">
+          <Icon name="tabler:bookmark" class="w-5 h-5" aria-hidden="true" />lihat contoh
+        </a>
+      </div>
+
+      <!-- marquee melingkar: arus mengelilingi tiang -->
+      <div class="relative w-56 h-56 md:w-72 md:h-72 mx-auto mt-8" role="img" aria-label="arus: jangan tebak harga, catat semua biaya, hpp dulu baru promo">
+        <svg id="orbit" class="orbit-marquee absolute inset-0 w-full h-full" viewBox="0 0 200 200" aria-hidden="true">
+          <defs>
+            <path id="lingkaran" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" fill="none"></path>
+          </defs>
+          <text class="font-bold" style="font-size: 13.5px; letter-spacing: 3px; fill: rgb(4 17 7);">
+            <textPath href="#lingkaran">jangan tebak harga • catat semua biaya • hpp dulu, baru promo •&#160;</textPath>
+          </text>
+        </svg>
+        <span class="sticker absolute inset-0 m-auto w-fit h-fit" aria-hidden="true">
+          <Icon name="perahu-bocor" class="w-16 h-16" />
+        </span>
+      </div>
+      <div class="mt-3">
+        <button id="btn-marquee-jeda" type="button" class="btn-beton ghost !px-4 !py-3" aria-pressed="false">
+          <span>jeda arus</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <svg class="wave-divider" viewBox="0 0 1200 56" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,28 Q75,0 150,28 T300,28 T450,28 T600,28 T750,28 T900,28 T1050,28 T1200,28 L1200,56 L0,56 Z" fill="rgb(4 17 7)"></path>
+  </svg>
+
+  <!-- ====== sumbu pasang: semua section menempel di garis ukur ====== -->
+  <main class="tide-axis">
+    <!-- 01 bahan baku -->
+    <section id="kalkulator" aria-labelledby="j-bahan" class="relative max-w-6xl mx-auto px-4 py-10 md:py-14">
+      <span class="axis-node" style="top: 3.5rem;" aria-hidden="true"></span>
+      <div class="wipe panel-beton p-5 md:p-8 md:ml-16">
+        <p class="label-dermaga">01 · bahan baku</p>
+        <h2 id="j-bahan" class="scramble font-display font-bold mt-2">apa saja yang masuk panci</h2>
+        <p class="hand-note mt-2">tulis semua bahan per satu batch produksi. harga di contoh = contoh, sesuaikan sama struk belanjamu.</p>
+        <div id="bahan-list" class="mt-4" aria-live="polite"></div>
+        <button id="btn-tambah-bahan" type="button" class="btn-beton secondary mt-4">
+          <Icon name="tabler:plus" class="w-5 h-5" aria-hidden="true" />tambah bahan
+        </button>
+      </div>
+    </section>
+
+    <!-- 02 operasional -->
+    <section aria-labelledby="j-op" class="relative max-w-6xl mx-auto px-4 py-10 md:py-14">
+      <span class="axis-node" style="top: 3.5rem;" aria-hidden="true"></span>
+      <div class="wipe panel-beton p-5 md:p-8 md:mr-16">
+        <p class="label-dermaga">02 · biaya operasional</p>
+        <h2 id="j-op" class="scramble font-display font-bold mt-2">biaya yang suka ngumpet</h2>
+        <p class="hand-note mt-2">gas, listrik, kemasan, ongkir, admin marketplace. yang tidak dicatat = bocor.</p>
+        <div id="op-list" class="mt-4" aria-live="polite"></div>
+        <button id="btn-tambah-op" type="button" class="btn-beton secondary mt-4">
+          <Icon name="tabler:plus" class="w-5 h-5" aria-hidden="true" />tambah biaya
+        </button>
+      </div>
+    </section>
+
+    <!-- 03 racikan -->
+    <section aria-labelledby="j-racik" class="relative max-w-6xl mx-auto px-4 py-10 md:py-14">
+      <span class="axis-node" style="top: 3.5rem;" aria-hidden="true"></span>
+      <div class="wipe panel-beton p-5 md:p-8 md:ml-16">
+        <p class="label-dermaga">03 · racikan</p>
+        <h2 id="j-racik" class="scramble font-display font-bold mt-2">batch-nya jadi berapa</h2>
+        <div class="grid md:grid-cols-3 gap-4 mt-4">
+          <div>
+            <label for="in-nama-resep" class="label-dermaga block mb-1">nama resep</label>
+            <input id="in-nama-resep" type="text" class="field-beton" placeholder="cth: sambal botol" autocomplete="off" />
+          </div>
+          <div>
+            <label for="in-unit" class="label-dermaga block mb-1">jumlah unit per batch</label>
+            <input id="in-unit" type="text" inputmode="decimal" class="field-beton" placeholder="cth: 12" autocomplete="off" />
+            <p id="err-unit" class="field-error" role="alert"></p>
+          </div>
+          <div>
+            <label for="in-margin" class="label-dermaga block mb-1">margin target (%)</label>
+            <input id="in-margin" type="text" inputmode="decimal" class="field-beton" placeholder="cth: 30" autocomplete="off" />
+            <p id="err-margin" class="field-error" role="alert"></p>
+          </div>
+        </div>
+        <p class="hand-note mt-4">patokan umum kuliner rumahan: margin 30–50%. bukan nasihat keuangan — sesuaikan dengan pasarmu.</p>
+      </div>
+    </section>
+
+    <!-- 04 hasil: permukaan air -->
+    <section id="hasil" aria-labelledby="j-hasil" class="relative max-w-6xl mx-auto px-4 py-10 md:py-14">
+      <span class="axis-node" style="top: 3.5rem;" aria-hidden="true"></span>
+      <div id="kartu-hasil" class="wipe panel-kertas p-5 md:p-8 md:mr-16 will-change-transform">
+        <p class="label-dermaga">04 · permukaan air</p>
+        <h2 id="j-hasil" class="scramble font-display font-bold mt-2">hpp per unit</h2>
+        <div class="hpp-gauge mt-6 p-6 md:p-10 text-center" role="status" aria-label="hasil perhitungan HPP">
+          <div id="hpp-water" class="hpp-water" style="height: 6%;" aria-hidden="true"></div>
+          <div class="relative">
+            <p id="hpp-angka" class="giant tick" aria-live="polite">Rp0</p>
+            <p class="label-dermaga mt-2">per unit</p>
+          </div>
+        </div>
+        <p id="hpp-catatan" class="hand-note mt-4 text-center" aria-live="polite">air belum naik — isi bahan &amp; biaya dulu.</p>
+        <dl class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-6">
+          <div class="panel-beton p-3">
+            <dt class="label-dermaga">total bahan</dt>
+            <dd id="breakdown-bahan" class="font-bold tick">Rp0</dd>
+          </div>
+          <div class="panel-beton p-3">
+            <dt class="label-dermaga">total operasional</dt>
+            <dd id="breakdown-op" class="font-bold tick">Rp0</dd>
+          </div>
+          <div class="panel-beton p-3">
+            <dt class="label-dermaga">total per batch</dt>
+            <dd id="breakdown-total" class="font-bold tick">Rp0</dd>
+          </div>
+          <div class="panel-beton p-3">
+            <dt class="label-dermaga">unit</dt>
+            <dd id="breakdown-unit" class="font-bold tick">10 unit</dd>
+          </div>
+          <div class="panel-beton p-3">
+            <dt class="label-dermaga">margin</dt>
+            <dd id="breakdown-margin" class="font-bold tick">30%</dd>
+          </div>
+          <div class="panel-beton p-3" style="background: var(--lime);">
+            <dt class="label-dermaga">harga jual saran</dt>
+            <dd id="jual-angka" class="font-bold tick">Rp0</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 05 ekspor -->
+    <section aria-labelledby="j-ekspor" class="relative max-w-6xl mx-auto px-4 py-10 md:py-14">
+      <span class="axis-node" style="top: 3.5rem;" aria-hidden="true"></span>
+      <div class="wipe panel-beton p-5 md:p-8 md:ml-16">
+        <p class="label-dermaga">05 · bawa pulang</p>
+        <h2 id="j-ekspor" class="scramble font-display font-bold mt-2">ringkasan buat dibawa</h2>
+        <pre id="ringkasan" class="panel-kertas p-4 mt-4 whitespace-pre-wrap" aria-label="ringkasan perhitungan"></pre>
+        <div class="flex flex-wrap gap-3 mt-4">
+          <button id="btn-salin-wa" type="button" class="btn-beton">
+            <Icon name="tabler:copy" class="w-5 h-5" aria-hidden="true" />salin buat wa
+          </button>
+          <button id="btn-salin-tautan" type="button" class="btn-beton secondary">
+            <Icon name="tabler:link" class="w-5 h-5" aria-hidden="true" />salin tautan resep
+          </button>
+          <button id="btn-unduh" type="button" class="btn-beton secondary">
+            <Icon name="tabler:download" class="w-5 h-5" aria-hidden="true" />unduh json
+          </button>
+          <button id="btn-cetak" type="button" class="btn-beton ghost">
+            <Icon name="tabler:printer" class="w-5 h-5" aria-hidden="true" />cetak
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 resep -->
+    <section id="resep" aria-labelledby="j-resep" class="relative max-w-6xl mx-auto px-4 py-10 md:py-14">
+      <span class="axis-node" style="top: 3.5rem;" aria-hidden="true"></span>
+      <div class="wipe panel-beton p-5 md:p-8 md:mr-16">
+        <p class="label-dermaga">06 · tambatan resep</p>
+        <h2 id="j-resep" class="scramble font-display font-bold mt-2">contoh &amp; simpanan</h2>
+        <p class="hand-note mt-2">tiga contoh siap pakai. harga = contoh — ganti dengan harga belanjamu sebelum dipakai jualan.</p>
+        <div id="preset-list" class="grid gap-3 mt-4"></div>
+        <div class="flex flex-wrap items-center gap-3 mt-6">
+          <button id="btn-simpan-resep" type="button" class="btn-beton">
+            <Icon name="tabler:anchor" class="w-5 h-5" aria-hidden="true" />tambat resep ini
+          </button>
+          <p class="hand-note">tersimpan di browser-mu saja, tidak dikirim ke mana-mana.</p>
+        </div>
+        <div id="saved-list" class="mt-4" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- 07 cara pakai -->
+    <section aria-labelledby="j-cara" class="relative max-w-6xl mx-auto px-4 py-10 md:py-14">
+      <span class="axis-node" style="top: 3.5rem;" aria-hidden="true"></span>
+      <div class="wipe panel-beton p-5 md:p-8 md:ml-16">
+        <p class="label-dermaga">cara pakai · tiga langkah</p>
+        <h2 id="j-cara" class="scramble font-display font-bold mt-2">dari panci ke patokan harga</h2>
+        <ol class="grid md:grid-cols-3 gap-4 mt-6 list-none p-0">
+          <li class="panel-kertas p-4">
+            <span class="sticker mb-2" aria-hidden="true"><Icon name="tabler:receipt" class="w-10 h-10" /></span>
+            <p class="font-bold">1 · catat</p>
+            <p>masukkan semua bahan &amp; biaya operasional per satu batch. tidak ada yang boleh ngumpet.</p>
+          </li>
+          <li class="panel-kertas p-4">
+            <span class="sticker mb-2" aria-hidden="true"><Icon name="timbangan-dapur" class="w-10 h-10" /></span>
+            <p class="font-bold">2 · racik</p>
+            <p>isi jadi berapa unit &amp; margin yang kamu mau. air langsung naik, angka langsung jalan.</p>
+          </li>
+          <li class="panel-kertas p-4">
+            <span class="sticker mb-2" aria-hidden="true"><Icon name="tabler:tag" class="w-10 h-10" /></span>
+            <p class="font-bold">3 · patok</p>
+            <p>lihat hpp per unit &amp; harga jual saran. salin ringkasannya, tempel di catatan jualanmu.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 08 faq -->
+    <section id="tanya" aria-labelledby="j-tanya" class="relative max-w-6xl mx-auto px-4 py-10 md:py-14">
+      <span class="axis-node" style="top: 3.5rem;" aria-hidden="true"></span>
+      <div class="wipe panel-beton p-5 md:p-8 md:mr-16">
+        <p class="label-dermaga">tanya pakde</p>
+        <h2 id="j-tanya" class="scramble font-display font-bold mt-2">yang sering ditanyakan</h2>
+        <div class="grid gap-3 mt-6">
+          <details class="panel-kertas p-4">
+            <summary class="font-bold cursor-pointer">apa beda hpp dan modal?</summary>
+            <p class="mt-2">modal = uang yang kamu keluarkan di awal (belanja + peralatan). hpp = total biaya untuk menghasilkan <em>satu unit</em> produk. modal bikin kamu bisa mulai, hpp bikin kamu tahu harga jual yang tidak rugi.</p>
+          </details>
+          <details class="panel-kertas p-4">
+            <summary class="font-bold cursor-pointer">margin berapa yang aman buat kuliner rumahan?</summary>
+            <p class="mt-2">patokan umum pelaku usaha: 30–50% dari hpp. di bawah itu rawan tekor kalau ada bahan naik atau retur. ini patokan umum, bukan nasihat keuangan — sesuaikan dengan pasarmu.</p>
+          </details>
+          <details class="panel-kertas p-4">
+            <summary class="font-bold cursor-pointer">boleh jual di bawah hpp pas promo?</summary>
+            <p class="mt-2">boleh, sesekali, kalau tujuannya jelas (misal cuci gudang atau cari pelanggan baru) dan kamu tahu persis berapa ruginya per unit. yang bahaya = promo di bawah hpp tanpa sadar.</p>
+          </details>
+          <details class="panel-kertas p-4">
+            <summary class="font-bold cursor-pointer">kapan harus hitung ulang?</summary>
+            <p class="mt-2">setiap ada harga bahan yang naik, ganti supplier, atau ubah kemasan. pakde sarankan: cek ulang minimal sebulan sekali, atau tiap kali struk belanja terasa lebih mahal.</p>
+          </details>
+          <details class="panel-kertas p-4">
+            <summary class="font-bold cursor-pointer">gaji sendiri masuk hitungan?</summary>
+            <p class="mt-2">wajib. kalau tenagamu tidak dihitung, yang untung cuma pembeli. masukkan sebagai pos operasional, misal "upah harian" dibagi jumlah batch sehari.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <svg class="wave-divider" viewBox="0 0 1200 56" preserveAspectRatio="none" aria-hidden="true" style="transform: scaleY(-1);">
+    <path d="M0,28 Q75,0 150,28 T300,28 T450,28 T600,28 T750,28 T900,28 T1050,28 T1200,28 L1200,56 L0,56 Z" fill="rgb(4 17 7)"></path>
+  </svg>
+
+  <footer class="border-t-[3px] border-[rgb(4_17_7)]">
+    <div class="max-w-6xl mx-auto px-4 py-8 flex flex-wrap items-center gap-3">
+      <span class="sticker" aria-hidden="true"><Icon name="tiang-ukur" class="w-8 h-8" /></span>
+      <p class="font-bold">hitunghpp — tiang ukur buat yang jualan.</p>
+      <p class="hand-note ml-auto">harga contoh bukan harga pasar. cek struk belanjamu.</p>
+    </div>
+  </footer>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../scripts/hpp.js"></script>
+</Layout>
